@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamil Nadu Travel Guide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-container {
+      text-align: center;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"] {
+      padding: 10px;
+      margin-bottom: 10px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s;
+    }
+
+    .form-container input[type="text"]:hover,
+    .form-container input[type="password"]:hover {
+      border-color: #77dd77; /* light green */
+    }
+
+    .form-container button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-container button:hover {
+      background-color: #5f9eff; /* darker blue */
+    }
+
+    .form-container a {
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .form-container a:hover {
+      color: #5f9eff; /* darker blue */
+    }
+
+    .districts {
+      display: none;
+    }
+
+    .district {
+      margin-bottom: 20px;
+    }
+
+    .district h2 {
+      color: #007bff;
+    }
+
+    .items {
+      list-style: none;
+      padding: 0;
+    }
+
+    .items li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Tamil Nadu Travel Guide</h1>
+    <div class="form-container" id="loginForm">
+      <h2>Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" required><br>
+      <input type="password" id="loginPassword" placeholder="Password" required><br>
+      <button id="loginButton">Login</button>
+      <p>Don't have an account? <a href="#" id="signupLink">Sign Up</a></p>
+    </div>
+    <div class="form-container" id="signupForm" style="display: none;">
+      <h2>Sign Up</h2>
+      <input type="text" id="signupUsername" placeholder="Username" required><br>
+      <input type="password" id="signupPassword" placeholder="Password" required><br>
+      <button id="signupButton">Sign Up</button>
+      <p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+    </div>
+    <div class="districts" id="districts"></div>
+  </div>
+
+  <script>
+    const users = []; // Array to store user information (for simplicity)
+
+    const districts = [
+    {
+        "name": "Ariyalur",
+        "description": "Ariyalur is a district in Tamil Nadu known for its rich cultural heritage and ancient temples.",
+        "touristPlaces": ["Gangaikonda Cholapuram", "Ariyalur Sivan Temple", "Thirumanur Kamarasavalli Karuppannaswamy Temple"]
+    },
+    {
+        "name": "Chennai",
+        "description": "Chennai, the capital city of Tamil Nadu, is a bustling metropolis known for its vibrant culture, historic landmarks, and beautiful beaches.",
+        "touristPlaces": ["Marina Beach", "Kapaleeshwarar Temple", "Fort St. George"]
+    },
+    {
+        "name": "Coimbatore",
+        "description": "Coimbatore is a major city in Tamil Nadu known for its textile industry, pleasant climate, and proximity to hill stations.",
+        "touristPlaces": ["Ooty", "Coimbatore Marina Beach", "Black Thunder Water Park"]
+    },
+    {
+        "name": "Cuddalore",
+        "description": "Cuddalore is a coastal district in Tamil Nadu known for its scenic beaches, historic temples, and cultural heritage.",
+        "touristPlaces": ["Pichavaram Mangrove Forest", "Silver Beach", "Padaleeswarar Temple"]
+    },
+    {
+        "name": "Dharmapuri",
+        "description": "Dharmapuri is a district in Tamil Nadu known for its natural beauty, waterfalls, and religious sites.",
+        "touristPlaces": ["Hogenakkal Falls", "Theerthamalai Temple", "Chinnar Dam"]
+    },
+    {
+        "name": "Dindigul",
+        "description": "Dindigul is a district in Tamil Nadu known for its historical significance, fortresses, and scenic beauty.",
+        "touristPlaces": ["Dindigul Fort", "Sirumalai Hill Station", "Thadikombu Perumal Temple"]
+    },
+    {
+        "name": "Erode",
+        "description": "Erode is a district in Tamil Nadu known for its agriculture, textile industry, and temples.",
+        "touristPlaces": ["Vellode Birds Sanctuary", "Bhavani Sangameswarar Temple", "Thindal Murugan Temple"]
+    },
+    {
+        "name": "Kallakurichi",
+        "description": "Kallakurichi is a newly formed district in Tamil Nadu known for its agriculture, temples, and serene environment.",
+        "touristPlaces": ["Gingee Fort", "Arulmigu Subramaniya Swamy Temple", "Perumal Kovil"]
+    },
+    {
+        "name": "Kanchipuram",
+        "description": "Kanchipuram is a district in Tamil Nadu known for its rich history, silk sarees, and ancient temples.",
+        "touristPlaces": ["Kanchi Kudil", "Kamakshi Amman Temple", "Varadharaja Perumal Temple"]
+    },
+    {
+        "name": "Kanyakumari",
+        "description": "Kanyakumari is a district in Tamil Nadu located at the southernmost tip of India, famous for its breathtaking sunrise, Vivekananda Rock Memorial, and tranquil beaches.",
+        "touristPlaces": ["Vivekananda Rock Memorial", "Kanyakumari Beach", "Padmanabhapuram Palace"]
+    },
+    {
+        "name": "Karur",
+        "description": "Karur is a district in Tamil Nadu known for its handloom industry, ancient temples, and scenic beauty.",
+        "touristPlaces": ["Velliangiri Hills", "Kalyana Pasupatheeswarar Temple", "Mayanur Andavar Temple"]
+    },
+    {
+        "name": "Krishnagiri",
+        "description": "Krishnagiri is a district in Tamil Nadu known for its agriculture, silk industry, and scenic beauty.",
+        "touristPlaces": ["Krishnagiri Dam", "Rayakottai Fort", "Kelevarapalli Dam"]
+    },
+    {
+        "name": "Madurai",
+        "description": "Madurai is a district in Tamil Nadu known as the cultural capital of Tamil Nadu, famous for its Meenakshi Amman Temple, festivals, and rich heritage.",
+        "touristPlaces": ["Meenakshi Amman Temple", "Thirumalai Nayakkar Palace", "Gandhi Memorial Museum"]
+    },
+    {
+        "name": "Nagapattinam",
+        "description": "Nagapattinam is a coastal district in Tamil Nadu known for its ancient temples, pristine beaches, and cultural heritage.",
+        "touristPlaces": ["Velankanni Church", "Nagore Dargah", "Karaikal Beach"]
+    },
+    {
+        "name": "Namakkal",
+        "description": "Namakkal is a district in Tamil Nadu known for its historical significance, rock-cut temples, and educational institutions.",
+        "touristPlaces": ["Namakkal Anjaneyar Temple", "Namakkal Rock Fort", "Kolli Hills"]
+    },
+    {
+        "name": "Nilgiris",
+        "description": "The Nilgiris district, often referred to as Ooty district, is a picturesque region in Tamil Nadu known for its lush greenery, tea plantations, and hill stations.",
+        "touristPlaces": ["Ooty", "Coonoor", "Kotagiri"]
+    },
+    {
+        "name": "Perambalur",
+        "description": "Perambalur is a district in Tamil Nadu known for its archaeological sites, ancient temples, and scenic beauty.",
+        "touristPlaces": ["Siruvachur Mathura Kaliamman Temple", "Alagapuram Murugan Temple", "Kunnam Big Temple"]
+    },
+    {
+        "name": "Pudukkottai",
+        "description": "Pudukkottai is a district in Tamil Nadu known for its rich history, ancient temples, and cultural heritage.",
+        "touristPlaces": ["Sittanavasal Cave", "Kudumiyanmalai Temple", "Thirumayam Fort"]
+    },
+    {
+        "name": "Ramanathapuram",
+        "description": "Ramanathapuram is a district in Tamil Nadu known for its historical significance, cultural heritage, and pristine beaches.",
+        "touristPlaces": ["Rameswaram", "Dhanushkodi", "Devipattinam"]
+    },
+    {
+        "name": "Ranipet",
+        "description": "Ranipet is a district in Tamil Nadu known for its industrial growth, educational institutions, and scenic beauty.",
+        "touristPlaces": ["Ratnagiri Murugan Temple", "Arulmigu Balamurugan Temple", "Vallimalai Subramanyar Temple"]
+    },
+    {
+        "name": "Salem",
+        "description": "Salem is a district in Tamil Nadu known for its textile industry, mangoes, and historic temples.",
+        "touristPlaces": ["Yercaud", "Kiliyur Falls", "1008 Lingam Temple"]
+    },
+    {
+        "name": "Sivaganga",
+        "description": "Sivaganga is a district in Tamil Nadu known for its historical significance, temples, and cultural heritage.",
+        "touristPlaces": ["Karaikudi", "Kundrakudi Murugan Temple", "Manamadurai"]
+    },
+    {
+        "name": "Tenkasi",
+        "description": "Tenkasi is a district in Tamil Nadu known for its natural beauty, waterfalls, and temples.",
+        "touristPlaces": ["Courtallam Falls", "Kuttralam", "Shenbagathoppu Grizzled Squirrel Wildlife Sanctuary"]
+    },
+    {
+        "name": "Thanjavur",
+        "description": "Thanjavur is a district in Tamil Nadu known for its rich cultural heritage, UNESCO World Heritage Sites, and traditional arts.",
+        "touristPlaces": ["Brihadeeswarar Temple", "Thanjavur Palace", "Gangaikonda Cholapuram"]
+    },
+    {
+        "name": "Theni",
+        "description": "Theni is a district in Tamil Nadu known for its scenic beauty, hill stations, and agriculture.",
+        "touristPlaces": ["Kodaikanal", "Suruli Falls", "Meghamalai"]
+    },
+    {
+        "name": "Thoothukudi",
+        "description": "Thoothukudi, also known as Tuticorin, is a coastal district in Tamil Nadu known for its port, beaches, and temples.",
+        "touristPlaces": ["Hare Island", "Thoothukudi Beach", "Kalakkad Mundanthurai Tiger Reserve"]
+    },
+    {
+        "name": "Tiruchirappalli",
+        "description": "Tiruchirappalli, also known as Trichy, is a district in Tamil Nadu known for its temples, educational institutions, and vibrant culture.",
+        "touristPlaces": ["Sri Ranganathaswamy Temple", "Rockfort Ucchi Pillayar Temple", "Sri Ayyappan Temple"]
+    },
+    {
+        "name": "Tirunelveli",
+        "description": "Tirunelveli is a district in Tamil Nadu known for its temples, waterfalls, and agricultural products.",
+        "touristPlaces": ["Nellaiappar Temple", "Courtallam Falls", "Manimuthar Dam"]
+    },
+    {
+        "name": "Tirupattur",
+        "description": "Tirupattur is a district in Tamil Nadu known for its temples, historical significance, and scenic beauty.",
+        "touristPlaces": ["Vellore Fort", "Jalakandeswarar Temple", "Sripuram Golden Temple"]
+    },
+    {
+        "name": "Tiruppur",
+        "description": "Tiruppur is a district in Tamil Nadu known for its textile industry, temples, and natural attractions.",
+        "touristPlaces": ["Noyyal River", "Avinashi Temple", "Kumaran Kundru Murugan Temple"]
+    },
+    {
+        "name": "Tiruvallur",
+        "description": "Tiruvallur is a district in Tamil Nadu known for its temples, historic landmarks, and scenic beauty.",
+        "touristPlaces": ["Thiruparankundram Murugan Temple", "Kamakshi Amman Temple", "Uttukottai"]
+    },
+    {
+        "name": "Tiruvannamalai",
+        "description": "Tiruvannamalai is a district in Tamil Nadu known for its spiritual significance, temples, and scenic beauty.",
+        "touristPlaces": ["Arunachaleswarar Temple", "Virupaksha Cave", "Sathanur Dam"]
+    },
+    {
+        "name": "Vellore",
+        "description": "Vellore is a district in Tamil Nadu known for its historical significance, educational institutions, and healthcare facilities.",
+        "touristPlaces": ["Vellore Fort", "Golden Temple (Sripuram)", "Jalakandeswarar Temple"]
+    },
+    {
+        "name": "Viluppuram",
+        "description": "Viluppuram is a district in Tamil Nadu known for its agriculture, lakes, and temples.",
+        "touristPlaces": ["Gingee Fort", "Tirukoilur", "Pichavaram"]
+    },
+    {
+        "name": "Virudhunagar",
+        "description": "Virudhunagar is a district in Tamil Nadu known for its industries, temples, and cultural heritage.",
+        "touristPlaces": ["Arulmigu Andal Temple", "Kamarajar Manimandapam", "Meghamalai"]
+    } 
+     
+    ];
+
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const districtsContainer = document.getElementById('districts');
+
+    function showDistricts() {
+      districtsContainer.innerHTML = ''; // Clear previous districts
+      districtsContainer.style.display = 'block';
+      districts.forEach(district => {
+        const districtElement = document.createElement('div');
+        districtElement.classList.add('district');
+
+        const districtHeading = document.createElement('h2');
+        districtHeading.textContent = district.name;
+        districtElement.appendChild(districtHeading);
+
+        const descriptionParagraph = document.createElement('p');
+        descriptionParagraph.textContent = district.description;
+        districtElement.appendChild(descriptionParagraph);
+
+        const touristPlacesHeading = document.createElement('h3');
+        touristPlacesHeading.textContent = 'Famous Tourist Places:';
+        districtElement.appendChild(touristPlacesHeading);
+
+        const touristPlacesList = document.createElement('ul');
+        district.touristPlaces.forEach(place => {
+          const placeElement = document.createElement('li');
+          placeElement.textContent = place;
+          touristPlacesList.appendChild(placeElement);
+        });
+        districtElement.appendChild(touristPlacesList);
+
+        districtsContainer.appendChild(districtElement);
+      });
+    }
+
+    function loginUser(username, password) {
+      // Simple validation (in a real-world scenario, use secure authentication methods)
+      const user = users.find(user => user.username === username && user.password === password);
+      if (user) {
+        showDistricts();
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'none';
+      } else {
+        alert('Invalid username or password. Please try again.');
+      }
+    }
+
+    function signupUser(username, password) {
+      // Simple validation (in a real-world scenario, perform validation and store user securely)
+      const existingUser = users.find(user => user.username === username);
+      if (existingUser) {
+        alert('Username already exists. Please choose another username.');
+      } else {
+        users.push({ username, password });
+        alert('Signup successful! Please login to continue.');
+      }
+    }
+
+    const loginButton = document.getElementById('loginButton');
+    const signupButton = document.getElementById('signupButton');
+    const signupLink = document.getElementById('signupLink');
+    const loginLink = document.getElementById('loginLink');
+
+    loginButton.addEventListener('click', function() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      loginUser(username, password);
+    });
+
+    signupButton.addEventListener('click', function() {
+      const username = document.getElementById('signupUsername').value;
+      const password = document.getElementById('signupPassword').value;
+      signupUser(username, password);
+    });
+
+    signupLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      loginForm.style.display = 'none';
+      signupForm.style.display = 'block';
+    });
+
+    loginLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      loginForm.style.display = 'block';
+      signupForm.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
+
+
+
+
